@@ -6,6 +6,9 @@ rules:
   preset-ai-writing:
     # AIライティング用のルール設定を適用
     strict: false
+    # 文章の長さ制限を150文字に設定
+    sentence-length:
+      max: 150
 
   # 日本語技術文書向けルールセット
   preset-ja-technical-writing:
@@ -31,6 +34,9 @@ rules:
     ja-space-around-code:
       before: true
       after: true
+    # 文章の長さ制限を150文字に設定
+    sentence-length:
+      max: 150
 
   # 表記ゆれ統一ルール
   prh:
