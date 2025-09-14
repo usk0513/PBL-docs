@@ -30,7 +30,7 @@ rules:
   - expected: DNS
     pattern: /[Dd][Nn][Ss]/
   - expected: IP
-    pattern: /[Ii][Pp]/
+    pattern: /\b[Ii][Pp]\b/
   - expected: DHCP
     pattern: /[Dd][Hh][Cc][Pp]/
 
@@ -62,7 +62,7 @@ rules:
   - expected: Shell
     pattern: /[Ss]hell/
   - expected: Bash
-    pattern: /[Bb]ash/
+    pattern: /\b[Bb]ash\b/
 
   # 開発ツール関連
   - expected: GitHub
