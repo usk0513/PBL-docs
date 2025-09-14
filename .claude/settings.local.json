@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__textlint__lintFile",
+      "mcp__textlint__getLintFixedFileContent"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "textlint"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "pbl-docs",
+  "version": "1.0.0",
+  "description": "Documentation for PBL project",
+  "main": "index.js",
+  "scripts": {
+    "textlint": "textlint",
+    "textlint:fix": "textlint --fix",
+    "textlint:all": "textlint 'docs/**/*.md' 'README.md'",
+    "textlint:fix_all": "textlint --fix 'docs/**/*.md' 'README.md'",
+    "markdownlint": "markdownlint",
+    "markdownlint:fix": "markdownlint --fix",
+    "markdownlint:all": "markdownlint 'docs/**/*.md' 'README.md'",
+    "markdownlint:fix_all": "markdownlint --fix 'docs/**/*.md' 'README.md'",
+    "lint": "sh -c 'textlint \"$@\" && markdownlint \"$@\"' --",
+    "lint:fix": "sh -c 'textlint --fix \"$@\" && markdownlint --fix \"$@\"' --",
+    "lint:all": "npm run textlint:all && npm run markdownlint:all",
+    "lint:fix_all": "npm run textlint:fix_all && npm run markdownlint:all_fix"
+  },
+  "devDependencies": {
+    "markdownlint": "^0.38.0",
+    "markdownlint-cli": "^0.45.0",
+    "textlint": "^15.2.2",
+    "textlint-rule-aws-service-name": "^1.13.1",
+    "textlint-rule-preset-ai-writing": "^1.1.0",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.2",
+    "textlint-rule-preset-japanese": "^10.0.3",
+    "textlint-rule-prh": "^6.1.0"
+  },
+  "keywords": [
+    "documentation",
+    "pbl",
+    "textlint",
+    "markdownlint"
+  ],
+  "author": "usk0513",
+  "license": "MIT"
+}

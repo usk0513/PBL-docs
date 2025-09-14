@@ -1,0 +1,40 @@
+# textlint設定ファイル
+filters: {}
+
+rules:
+  # AI文章向けのルールセット
+  preset-ai-writing:
+    # AIライティング用のルール設定を適用
+    strict: false
+
+  # 日本語技術文書向けルールセット
+  preset-ja-technical-writing:
+    # 句読点の統一
+    ja-no-mixed-period:
+      allowPeriodMarks: [":", "：", "。"]
+    # 同じ単語の連続使用を禁止
+    ja-no-successive-word: true
+    # 誤用表現の検出
+    ja-no-abusage: true
+    # 一文中の読点の最大数
+    max-ten:
+      max: 3
+    # 一文の最大文字数
+    sentence-length:
+      max: 150
+
+  # 日本語文書全般のルールセット
+  preset-japanese:
+    # 半角文字と全角文字の間のスペース（無効化）
+    ja-space-between-half-and-full-width: false
+    # コードの前後のスペース
+    ja-space-around-code:
+      before: true
+      after: true
+
+  # 表記ゆれ統一ルール
+  prh:
+    rulePaths: ["prh-rules/index.yml"]
+
+  # AWSサービス名の表記統一
+  aws-service-name: true

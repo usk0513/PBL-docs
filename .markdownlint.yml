@@ -1,0 +1,33 @@
+# markdownlint設定ファイル
+
+# デフォルトのルールセットを有効化
+default: true
+
+# MD007: リストのインデント
+MD007:
+  indent: 2
+
+# MD013: 行の長さ制限
+MD013:
+  line_length: 150
+  code_blocks: false  # コードブロックは除外
+  tables: false       # テーブルは除外
+
+# MD022: ヘッダーの前後に空行を要求しない
+MD022: false
+
+# MD024: 重複するヘッダー（異なる階層レベルでは許可）
+MD024:
+  siblings_only: true
+
+# MD031: コードブロックの前後に空行を要求しない
+MD031: false
+
+# MD033: HTMLタグの使用を許可
+MD033: false
+
+# MD036: 強調テキストをヘッダー代わりに使うことを許可
+MD036: false
+
+# MD041: ファイルの最初の行がヘッダーである必要なし
+MD041: false
