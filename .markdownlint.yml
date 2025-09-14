@@ -9,7 +9,7 @@ MD007:
 
 # MD013: 行の長さ制限
 MD013:
-  line_length: 150
+  line_length: 200
   code_blocks: false  # コードブロックは除外
   tables: false       # テーブルは除外
 

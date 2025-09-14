@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "textlint": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": ["run", "textlint", "--mcp", "--quiet"],
+      "env": {},
+      "cwd": "/Users/yusukehirono/Documents/code/PBL-docs"
+    }
+  }
+}

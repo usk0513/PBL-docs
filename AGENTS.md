@@ -36,7 +36,7 @@
 - Install: `pnpm i` (or `npm ci`).
 - Lint all: `pnpm run textlint:all` and `pnpm run markdownlint:all`.
 - Auto-fix: `pnpm run textlint:fix_all` and `pnpm run markdownlint:fix_all`.
-- Per-file lint: `pnpm run lint -- <path>` / `pnpm run lint:fix -- <path>`.
+- Per-file lint: `pnpm run lint <path>` / `pnpm run lint:fix <path>`.
 - Deck check layouts: `deck ls-layouts docs/<file>.md` (verify expected layouts appear).
 
 ## Coding Style & Naming Conventions
