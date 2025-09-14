@@ -1,0 +1,92 @@
+version: 1
+rules:
+  # 一般的な技術用語
+  - expected: Web
+    pattern: /[Ww]eb/
+  - expected: API
+    pattern: /[Aa]pi/
+  - expected: URL
+    pattern: /[Uu]rl/
+  - expected: HTML
+    pattern: /[Hh]tml/
+  - expected: CSS
+    pattern: /[Cc]ss/
+  - expected: JavaScript
+    pattern: /[Jj]ava[Ss]cript/
+  - expected: JSON
+    pattern: /[Jj]son/
+
+  # ネットワーク関連
+  - expected: TCP/IP
+    pattern: /[Tt][Cc][Pp]\/[Ii][Pp]/
+  - expected: TCP/IP
+    pattern: /[Tt][Cc][Pp]-[Ii][Pp]/
+  - expected: HTTP
+    pattern: /[Hh][Tt][Tt][Pp]/
+  - expected: HTTPS
+    pattern: /[Hh][Tt][Tt][Pp][Ss]/
+  - expected: SSH
+    pattern: /[Ss][Ss][Hh]/
+  - expected: DNS
+    pattern: /[Dd][Nn][Ss]/
+  - expected: IP
+    pattern: /[Ii][Pp]/
+  - expected: DHCP
+    pattern: /[Dd][Hh][Cc][Pp]/
+
+  # 仮想化・VM関連
+  - expected: VM
+    pattern: /[Vv][Mm]/
+  - expected: Docker
+    pattern: /[Dd]ocker/
+  - expected: VirtualBox
+    pattern: /[Vv]irtualbox/
+  - expected: VirtualBox
+    pattern: /[Vv]irtual [Bb]ox/
+  - expected: VMware
+    pattern: /[Vv][Mm]ware/
+
+  # OS・Linux関連
+  - expected: Ubuntu
+    pattern: /[Uu]buntu/
+  - expected: Linux
+    pattern: /[Ll]inux/
+  - expected: Windows
+    pattern: /[Ww]indows/
+  - expected: macOS
+    pattern: /[Mm]ac[Oo][Ss]/
+  - expected: macOS
+    pattern: /[Mm]ac [Oo][Ss]/
+  - expected: Terminal
+    pattern: /[Tt]erminal/
+  - expected: Shell
+    pattern: /[Ss]hell/
+  - expected: Bash
+    pattern: /[Bb]ash/
+
+  # 開発ツール関連
+  - expected: GitHub
+    pattern: /[Gg]ithub/
+  - expected: Git
+    pattern: /[Gg]it/
+  # 英数字の統一
+  - expected: "0"
+    pattern: "０"
+  - expected: "1"
+    pattern: "１"
+  - expected: "2"
+    pattern: "２"
+  - expected: "3"
+    pattern: "３"
+  - expected: "4"
+    pattern: "４"
+  - expected: "5"
+    pattern: "５"
+  - expected: "6"
+    pattern: "６"
+  - expected: "7"
+    pattern: "７"
+  - expected: "8"
+    pattern: "８"
+  - expected: "9"
+    pattern: "９"
