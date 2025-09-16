@@ -22,6 +22,7 @@ rules:
     # 一文中の読点の最大数
     max-ten:
       max: 3
+    no-exclamation-question-mark: false
     # 一文の最大文字数
     sentence-length:
       max: 150

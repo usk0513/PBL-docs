@@ -15,7 +15,7 @@ Markdown files in `/docs/` use YAML frontmatter with:
 
 - `presentationID`: Google Slides presentation ID for deck tool
 - `title`: Document title
-- `breaks: true`: Enable slide breaks
+- `breaks: true`: Enable slide breaks (recommended for proper line formatting)
 
 ### Creating New Files
 
@@ -27,6 +27,11 @@ When creating new Markdown files:
    deck ls-layouts <file_path>
    ```
 3. Confirm the expected layouts are available (see below)
+4. Consider content type and select appropriate slide layouts for each slide
+5. Add layout specification using HTML comments:
+   ```markdown
+   <!-- {"layout": "タイトルと本文"} -->
+   ```
 
 ### Expected Slide Layouts
 
@@ -49,6 +54,50 @@ When using the correct theme, the following layouts should be available:
 - タイトルと画像(1枚)と説明
 - タイトルと画像(2枚)と説明
 - 空白
+
+## Deck Tool Usage
+
+### Basic Commands
+
+```bash
+# Create new presentation
+deck new <filename>.md --title "プレゼンテーション名"
+
+# Apply Markdown content to Google Slides
+deck apply <filename>.md
+
+# Open presentation in browser
+deck open <filename>.md
+
+# List available layouts
+deck ls-layouts <filename>.md
+```
+
+### Markdown Formatting Rules
+
+1. **Slide Breaks**: Use `---` (three or more consecutive hyphens) to separate slides
+2. **Headings**:
+   - Shallowest heading level becomes slide title
+   - Next heading level becomes subtitle
+   - Deeper headings become content
+3. **Layout Specification**: Add layout comments before slide content:
+   ```markdown
+   <!-- {"layout": "タイトルと本文"} -->
+   ```
+
+### Advanced Features
+
+- **Code Block Conversion**: Code blocks can be automatically converted to images
+- **Conditional Settings**: Use CEL expressions for dynamic page settings
+- **Text Styling**: Create "style" layouts for text formatting (bold, italic, underline)
+
+### Configuration Priority
+
+Settings are applied in this order (highest to lowest priority):
+1. Command line options
+2. YAML frontmatter in Markdown files
+3. Configuration files
+4. Default values
 
 ## Common Commands
 
