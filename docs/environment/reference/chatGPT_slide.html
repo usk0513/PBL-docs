@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>開発環境と環境構築の重要性</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: #f7f9fb;
+      color: #333;
+    }
+    .slide {
+      display: none;
+      padding: 60px 80px;
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .slide.active {
+      display: block;
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    img.center {
+      max-width: 80%;
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    ul {
+      padding-left: 1.2em;
+    }
+    nav {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      text-align: center;
+    }
+    nav button {
+      background: #007acc;
+      border: none;
+      color: #fff;
+      padding: 8px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    nav button:disabled {
+      background: #c0c0c0;
+      cursor: default;
+    }
+    .footer {
+      position: absolute;
+      bottom: 40px;
+      left: 80px;
+      right: 80px;
+      font-size: 12px;
+      color: #666;
+    }
+    .footnotes {
+      font-size: 12px;
+      color: #666;
+      margin-top: 20px;
+    }
+    .footnotes a {
+      color: #007acc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Slide 1: Title -->
+  <div class="slide active" id="slide0">
+    <h1>開発環境と環境構築の重要性</h1>
+    <p>情報系大学院PBL (アジャイル開発)</p>
+    <img src="https://i.gyazo.com/f82c03dcdf1febb939c531171b321657.png" alt="Cover illustration" class="center">
+    <div class="footnotes"></div>
+  </div>
+  
+  <!-- Slide 2: Agenda -->
+  <div class="slide" id="slide1">
+    <h2>アジェンダ</h2>
+    <ol>
+      <li>環境の話をする理由</li>
+      <li>複数環境の種類と役割</li>
+      <li>本授業の環境アーキテクチャ</li>
+      <li>技術スタックとリポジトリ構成</li>
+      <li>ローカル開発環境の整備</li>
+      <li>演習内容</li>
+      <li>まとめ</li>
+    </ol>
+    <div class="footnotes"></div>
+  </div>
+  
+  <!-- Slide 3: Why environment matters -->
+  <div class="slide" id="slide2">
+    <h2>なぜ環境が重要なのか？</h2>
+    <p>ソフトウェアが自分のPCで動いても、他人のマシンや本番環境では動かないことがよくあります。環境の違いが原因でバグが再現できず時間を浪費することもあります。</p>
+    <ul>
+      <li><strong>「俺の環境では動く」問題</strong> – 環境差異が原因でバグが再現できず時間を浪費します。</li>
+      <li><strong>安全な試行のための分離</strong> – 本番環境を壊さないよう、開発用の砂場が必要です。</li>
+      <li><strong>チームの統一</strong> – 複数人で開発するときは全員が同じ環境であることが重要です。</li>
+    </ul>
+    <div class="footnotes">[1] <a href="https://thoughtbot.com/blog/it-works-on-my-machine-why#you-have-a-different-environment" target="_blank">環境差が動作の違いの主な原因であること</a></div>
+  </div>
+
+  <!-- Slide 4: OS differences -->
+  <div class="slide" id="slide3">
+    <h2>OS差異による問題例</h2>
+    <ul>
+      <li><strong>改行コード・ファイルパスの違い</strong> – WindowsとmacOS/Linuxでは改行コードやパス区切りが異なり、同じスクリプトでも挙動が変わります。</li>
+      <li><strong>ファイル名の大文字小文字</strong> – macOS標準のファイルシステムは大文字小文字を区別しませんが、Linuxでは区別するためバグの原因になります。</li>
+      <li><strong>アーキテクチャの違い</strong> – ARMチップ（M1など）とIntelでビルドしたバイナリが互換性を持たないことがあります。</li>
+    </ul>
+    <div class="footnotes">[1] <a href="https://thoughtbot.com/blog/it-works-on-my-machine-why#you-have-a-different-environment" target="_blank">OSの違いと依存性の影響</a></div>
+  </div>
+
+  <!-- Slide 5: Types of environments -->
+  <div class="slide" id="slide4">
+    <h2>複数環境の種類と役割</h2>
+    <ul>
+      <li><strong>開発環境 (Dev)</strong> – 開発者が機能追加やデバッグを行うための砂場。実験的な変更を安全に試せます。</li>
+      <li><strong>テスト／ステージング環境 (Test/Staging)</strong> – 本番に近い構成で動作確認や品質保証を行う場所。最終リリース前の検証を行います。</li>
+      <li><strong>本番環境 (Production)</strong> – 実際のユーザーが利用する環境。安定性と安全性が最優先で、信頼できるコードのみデプロイします。</li>
+    </ul>
+    <div class="footnotes">[2] <a href="https://northflank.com/blog/what-are-dev-qa-preview-test-staging-and-production-environments#what-is-a-development-environment" target="_blank">開発環境は安全な砂場であること</a></div>
+  </div>
+
+  <!-- Slide 6: Environment flow diagram -->
+  <div class="slide" id="slide5">
+    <h2>環境の流れ</h2>
+    <img src="environment_flow.png" alt="Flow of environments" class="center">
+    <p style="text-align:center;">ローカルからチームVMへ、そして本番VMへコードを移行します。</p>
+    <div class="footnotes">[2] <a href="https://northflank.com/blog/what-are-dev-qa-preview-test-staging-and-production-environments#what-is-a-development-environment" target="_blank">環境を揃えて不具合を防ぐ</a></div>
+  </div>
+
+  <!-- Slide 7: Architecture for class -->
+  <div class="slide" id="slide6">
+    <h2>授業の環境アーキテクチャ</h2>
+    <ul>
+      <li><strong>本番環境用VM</strong> – クラス全体の成果物を動かすサーバー。</li>
+      <li><strong>チーム開発環境用VM</strong> – 各チームに1台。自由に実験や検証ができます。</li>
+      <li><strong>ローカル開発環境</strong> – 各自のPC上。Dockerなどで統一します。</li>
+    </ul>
+    <p>この構成により他チームの作業に影響を与えずに開発が進められます。</p>
+    <div class="footnotes"></div>
+  </div>
+
+  <!-- Slide 8: Tech stack and repo -->
+  <div class="slide" id="slide7">
+    <h2>技術スタックとリポジトリ構成</h2>
+    <ul>
+      <li><strong>フレームワーク</strong> – Python &amp; Django</li>
+      <li><strong>単一リポジトリ</strong> – 全チームが同じGitリポジトリを共有し、ディレクトリで分割します。</li>
+    </ul>
+    <img src="repository_structure.png" alt="Repository structure" class="center">
+    <p style="text-align:center;">各チームは自分のディレクトリ内で作業します。</p>
+    <div class="footnotes"></div>
+  </div>
+
+  <!-- Slide 9: Local environment -->
+  <div class="slide" id="slide8">
+    <h2>ローカル開発環境の整備</h2>
+    <ul>
+      <li><strong>Dockerの利用</strong> – 全員が同じバージョンのPython・Django・DBを使用し、OS差異の影響をなくします。</li>
+      <li><strong>他の方法も検討</strong> – WSL2や仮想マシンでも構いませんが、バージョンと依存関係を揃えましょう。</li>
+      <li><strong>仮想環境ツール</strong> – <code>venv</code>などで環境を分離し、<code>requirements.txt</code>で依存関係を共有します。</li>
+      <li><strong>ドキュメント</strong> – 環境構築手順をREADMEにまとめ、再現性を高めます。</li>
+    </ul>
+    <div class="footnotes">[3] <a href="https://www.activestate.com/blog/how-to-eliminate-works-on-my-machine-issues#works-on-my-machine-is-a-common-refrain" target="_blank">共通環境の必要性とコンテナ化</a></div>
+  </div>
+
+  <!-- Slide 10: Exercises -->
+  <div class="slide" id="slide9">
+    <h2>演習: 手を動かしてみよう</h2>
+    <ol>
+      <li>リポジトリをクローンし、チームディレクトリを確認します。</li>
+      <li>Dockerや仮想環境を使ってローカル環境を構築し、サーバーを起動します。</li>
+      <li>Djangoプロジェクトの雛形を作成して開発サーバーを起動します。</li>
+      <li>ブラウザで動作を確認し、チームVMでも起動してみましょう。</li>
+      <li>環境構築の工夫やトラブルを振り返り、クラス全体で共有します。</li>
+    </ol>
+    <div class="footnotes"></div>
+  </div>
+
+  <!-- Slide 11: Summary -->
+  <div class="slide" id="slide10">
+    <h2>まとめと次のステップ</h2>
+    <ul>
+      <li><strong>環境は品質の土台</strong> – OSや依存関係の違いによって「自分のPCでは動く」が発生します。環境を揃えましょう。</li>
+      <li><strong>複数環境を活用</strong> – 開発・テスト・本番環境を分け、各段階で安全に試行錯誤します。</li>
+      <li><strong>共有と協力</strong> – 単一リポジトリと共通の技術スタックにより、クラス全体で知見を共有します。</li>
+      <li><strong>自分たちで最適解を探す</strong> – ツールやフローは提案しますが、より良い方法を自分たちで模索し、クラスに還元しましょう。</li>
+    </ul>
+    <p>この環境構築の理解を踏まえ、次回からは実際の開発サイクルに入ります。楽しみながら学んでいきましょう！</p>
+    <div class="footnotes">[1] <a href="https://thoughtbot.com/blog/it-works-on-my-machine-why#you-have-a-different-environment" target="_blank">環境差が動作の違いの主な原因</a>, [2] <a href="https://northflank.com/blog/what-are-dev-qa-preview-test-staging-and-production-environments#what-is-a-development-environment" target="_blank">開発環境の役割</a>, [3] <a href="https://www.activestate.com/blog/how-to-eliminate-works-on-my-machine-issues#works-on-my-machine-is-a-common-refrain" target="_blank">共通環境の必要性</a></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav>
+    <button id="prevBtn">Prev</button>
+    <button id="nextBtn">Next</button>
+  </nav>
+
+  <script>
+    (function() {
+      const slides = document.querySelectorAll('.slide');
+      let current = 0;
+      function show(n) {
+        if (n < 0 || n >= slides.length) return;
+        slides[current].classList.remove('active');
+        current = n;
+        slides[current].classList.add('active');
+        // disable buttons when at ends
+        document.getElementById('prevBtn').disabled = current === 0;
+        document.getElementById('nextBtn').disabled = current === slides.length - 1;
+      }
+      document.getElementById('prevBtn').addEventListener('click', function() {
+        show(current - 1);
+      });
+      document.getElementById('nextBtn').addEventListener('click', function() {
+        show(current + 1);
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') show(current + 1);
+        if (e.key === 'ArrowLeft') show(current - 1);
+      });
+    })();
+  </script>
+</body>
+</html>
