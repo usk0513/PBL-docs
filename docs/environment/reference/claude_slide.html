@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アジャイル開発PBL - 環境構築講義</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s ease-in-out;
+            background: white;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .slide h2 {
+            font-size: 2em;
+            color: #764ba2;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .slide h3 {
+            font-size: 1.5em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .slide-indicator {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+            z-index: 1001;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .content {
+            max-width: 1000px;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .emoji-large {
+            font-size: 4em;
+            margin: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: auto;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 12px;
+            height: 12px;
+            background: #ff5f56;
+            border-radius: 50%;
+            box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+        }
+
+        .code-content {
+            margin-top: 20px;
+        }
+
+        .interactive-demo {
+            background: #f7f9fc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .comparison-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .good { border-left: 5px solid #27c93f; }
+        .bad { border-left: 5px solid #ff5f56; }
+
+        .list-item {
+            background: #f0f4f8;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .list-item:hover {
+            background: #e8ecf4;
+            transform: translateX(10px);
+        }
+
+        .architecture-diagram {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+        }
+
+        .vm-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .terminal {
+            background: #1e1e1e;
+            color: #4fc414;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .terminal::before {
+            content: '$ ';
+            color: #4fc414;
+        }
+
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end);
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .quiz-container {
+            background: #f7f9fc;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #27c93f;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #ff5f56;
+        }
+
+        .team-exercise {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-exercise::before {
+            content: '👥';
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            font-size: 100px;
+            opacity: 0.1;
+        }
+
+        .exercise-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .exercise-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .tip-box {
+            background: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .tip-box::before {
+            content: '💡 ヒント: ';
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        @media (max-width: 768px) {
+            .slide h1 { font-size: 2em; }
+            .slide h2 { font-size: 1.5em; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .slide { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="progress-bar" id="progressBar"></div>
+        
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>アジャイル開発PBL</h1>
+            <h2>第2回：開発環境を理解する</h2>
+            <div class="emoji-large">🚀</div>
+            <h3>〜なぜ「環境」が大切なのか〜</h3>
+        </div>
+
+        <!-- Slide 2: Goals -->
+        <div class="slide">
+            <h1>今日のゴール</h1>
+            <div class="content">
+                <div class="list-item">🤔 <strong>なぜ</strong>複数の環境が必要なのかを理解する</div>
+                <div class="list-item">🏗️ プロジェクトの<strong>アーキテクチャ</strong>を把握する</div>
+                <div class="list-item">🐳 <strong>Docker</strong>でローカル環境を構築できる</div>
+                <div class="list-item">👥 チーム開発の<strong>ルール</strong>を決める</div>
+                <div class="list-item">💡 環境の問題を<strong>自分で発見・解決</strong>できる</div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Common Problems -->
+        <div class="slide">
+            <h1>こんな経験ありませんか？</h1>
+            <div class="interactive-demo">
+                <button class="demo-button" onclick="showProblem(1)">「私のPCでは動くのに...」</button>
+                <button class="demo-button" onclick="showProblem(2)">「昨日まで動いてたのに...」</button>
+                <button class="demo-button" onclick="showProblem(3)">「チームメイトのPCでは動かない...」</button>
+                <div id="problemExplanation" style="margin-top: 30px; font-size: 1.2em; min-height: 60px;"></div>
+            </div>
+            <p style="font-size: 1.3em; font-weight: bold; color: #667eea; margin-top: 30px;">
+                これらは全て「環境」の問題です！
+            </p>
+        </div>
+
+        <!-- Slide 4: What is Environment -->
+        <div class="slide">
+            <h1>環境とは何か？</h1>
+            <div class="architecture-diagram">
+                <div style="text-align: center; font-size: 1.2em;">
+                    <div style="padding: 20px; background: #667eea; color: white; border-radius: 10px; margin: 10px auto; width: 300px;">
+                        あなたのコード
+                    </div>
+                    <div style="font-size: 2em;">↓</div>
+                    <div style="padding: 20px; background: #ff5f56; color: white; border-radius: 10px; margin: 10px auto; width: 300px;">
+                        【環境】← ここが違うと...
+                    </div>
+                    <div style="font-size: 2em;">↓</div>
+                    <div style="padding: 20px; background: #27c93f; color: white; border-radius: 10px; margin: 10px auto; width: 300px;">
+                        実行結果
+                    </div>
+                </div>
+            </div>
+            <h3 style="text-align: center; margin-top: 30px;">
+                環境 = <span class="highlight">OS</span> + <span class="highlight">ツール</span> + 
+                <span class="highlight">設定</span> + <span class="highlight">データ</span>
+            </h3>
+        </div>
+
+        <!-- Slide 5: Python Version Demo -->
+        <div class="slide">
+            <h1>実験してみよう 🧪</h1>
+            <h2>Python実行結果の違い</h2>
+            <div class="code-block">
+                <div class="code-content">
+# team_member_a.py
+import sys
+print(f"Python: {sys.version}")
+print(f"OS: {sys.platform}")
+                </div>
+            </div>
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>🍎 Mac</h3>
+                    <div class="terminal">Python: 3.11.0<br>OS: darwin</div>
+                </div>
+                <div class="comparison-card">
+                    <h3>🪟 Windows</h3>
+                    <div class="terminal">Python: 3.9.0<br>OS: win32</div>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 1.3em; font-weight: bold; color: #ff5f56;">
+                → 同じコードでも結果が違う！
+            </p>
+        </div>
+
+        <!-- Slide 6: Scale Problem -->
+        <div class="slide">
+            <h1>120人の学生 = 小規模な会社</h1>
+            <div class="interactive-demo" id="environmentChaos">
+                <h2>環境のカオスをシミュレート</h2>
+                <button class="demo-button" onclick="addStudent()">学生を追加</button>
+                <button class="demo-button" onclick="resetStudents()">リセット</button>
+                <div id="studentEnvironments" style="margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center;"></div>
+                <p id="chaosLevel" style="margin-top: 20px; font-size: 1.2em;"></p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Multiple Environments -->
+        <div class="slide">
+            <h1>なぜ複数の環境が必要？</h1>
+            <div class="architecture-diagram">
+                <div style="display: flex; justify-content: space-around; align-items: center;">
+                    <div class="vm-box">
+                        <h3>開発環境</h3>
+                        <p>自由に実験</p>
+                    </div>
+                    <span style="font-size: 2em;">→</span>
+                    <div class="vm-box">
+                        <h3>テスト環境</h3>
+                        <p>品質確認</p>
+                    </div>
+                    <span style="font-size: 2em;">→</span>
+                    <div class="vm-box">
+                        <h3>本番環境</h3>
+                        <p>お客様が使う</p>
+                    </div>
+                </div>
+            </div>
+            <div class="quiz-container">
+                <h3>質問: 本番環境で直接開発したらどうなる？</h3>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">開発が速くなる</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">サービスが止まる可能性がある</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">特に問題ない</div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Problems Without Environment Management -->
+        <div class="slide">
+            <h1>環境がバラバラだと...</h1>
+            <div class="content">
+                <div class="comparison-grid">
+                    <div class="comparison-card bad">
+                        <h3>😰 時間の無駄</h3>
+                        <p>「動かない」の調査に3時間...</p>
+                        <p>環境差異のデバッグ</p>
+                    </div>
+                    <div class="comparison-card bad">
+                        <h3>📉 品質低下</h3>
+                        <p>テストが通らない</p>
+                        <p>再現できないバグ</p>
+                    </div>
+                </div>
+                <div class="comparison-card bad" style="margin: 20px auto; max-width: 400px;">
+                    <h3>💥 リリース失敗</h3>
+                    <p>本番で初めて発覚するバグ</p>
+                    <p>緊急対応の連続</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Architecture Overview -->
+        <div class="slide">
+            <h1>プロジェクトのアーキテクチャ</h1>
+            <div class="architecture-diagram">
+                <div style="text-align: center;">
+                    <div style="background: #f0f4f8; padding: 30px; border-radius: 15px;">
+                        <h3>オンプレミスサーバー (Ubuntu)</h3>
+                        <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                            <div class="vm-box">
+                                <h4>本番環境VM</h4>
+                            </div>
+                            <div class="vm-box">
+                                <h4>開発環境VM ×20</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; margin-top: 30px;">
+                        <div>
+                            <div style="font-size: 2em;">↑</div>
+                            <p>ユーザーアクセス</p>
+                        </div>
+                        <div>
+                            <div style="font-size: 2em;">↑</div>
+                            <p>チーム開発</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Repository Structure -->
+        <div class="slide">
+            <h1>リポジトリ構成</h1>
+            <h2>全チーム共通リポジトリ！</h2>
+            <div class="code-block">
+                <div class="code-content">
+project-root/
+├── team01/     # チーム1のディレクトリ
+│   └── ...
+├── team02/     # チーム2のディレクトリ
+│   └── ...
+├── team03/     # チーム3のディレクトリ
+│   └── ...
+└── shared/     # 共通リソース
+                </div>
+            </div>
+            <div class="tip-box">
+                なぜ1つのリポジトリ？ → 実際の企業での大規模開発を体験！
+            </div>
+        </div>
+
+        <!-- Slide 11: Docker Introduction -->
+        <div class="slide">
+            <h1>Docker - 環境統一の切り札 🐳</h1>
+            <div class="comparison-grid">
+                <div class="comparison-card bad">
+                    <h3>😱 Dockerがない世界</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>✗ Python 3.11をインストール...</li>
+                        <li>✗ PostgreSQL 15をインストール...</li>
+                        <li>✗ Redisもインストール...</li>
+                        <li>✗ 環境変数を設定...</li>
+                    </ul>
+                    <p style="color: #ff5f56; font-weight: bold;">120人が120通りの方法</p>
+                </div>
+                <div class="comparison-card good">
+                    <h3>🎉 Dockerがある世界</h3>
+                    <div class="terminal" style="background: #27c93f; color: white;">
+docker-compose up
+                    </div>
+                    <p style="color: #27c93f; font-weight: bold;">全員が同じ環境！</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Docker Compose -->
+        <div class="slide">
+            <h1>docker-compose.yml</h1>
+            <div class="code-block">
+                <div class="code-content">
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=True
+  
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=myapp
+                </div>
+            </div>
+            <button class="demo-button" onclick="explainDockerCompose()">設定を解説</button>
+            <div id="dockerExplanation" style="margin-top: 20px;"></div>
+        </div>
+
+        <!-- Slide 13: Team Exercise -->
+        <div class="slide">
+            <h1>演習：環境の違いを体験しよう</h1>
+            <div class="team-exercise">
+                <h2>🔍 調査ミッション（15分）</h2>
+                <div class="exercise-step" data-step="1">
+                    <strong>チームメンバーの環境を調査</strong>
+                    <div class="terminal">python --version</div>
+                </div>
+                <div class="exercise-step" data-step="2">
+                    <strong>違いをドキュメント化</strong>
+                    <p>何が違う？なぜ違う？</p>
+                </div>
+                <div class="exercise-step" data-step="3">
+                    <strong>問題になりそうな点を予測</strong>
+                    <p>この違いが開発にどう影響する？</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Summary -->
+        <div class="slide">
+            <h1>まとめ</h1>
+            <div class="content">
+                <h2>今日学んだこと</h2>
+                <div class="list-item">✅ 環境の重要性を理解した</div>
+                <div class="list-item">✅ プロジェクト構成を把握した</div>
+                <div class="list-item">✅ Dockerの基本を学んだ</div>
+                <div class="list-item">✅ チーム開発の準備ができた</div>
+                <div style="margin-top: 40px; text-align: center;">
+                    <h2 style="color: #667eea;">次回: モブプログラミングで実践！</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Q&A -->
+        <div class="slide">
+            <h1>質問タイム</h1>
+            <div class="emoji-large">🤔</div>
+            <h2>わからないことは今聞こう！</h2>
+            <div class="content" style="text-align: center;">
+                <p style="font-size: 1.3em; margin: 20px 0;">環境構築は最初が肝心</p>
+                <p style="font-size: 1.3em; margin: 20px 0;">一度理解すれば一生使える知識</p>
+                <div class="tip-box" style="margin-top: 40px;">
+                    Slackチャンネル #environment-help で質問歓迎！
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="controls">
+            <button class="nav-button" id="prevBtn" onclick="previousSlide()">← 前へ</button>
+            <span class="slide-indicator">
+                <span id="currentSlide">1</span> / <span id="totalSlides">15</span>
+            </span>
+            <button class="nav-button" id="nextBtn" onclick="nextSlide()">次へ →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let studentCount = 0;
+        const environments = [
+            { os: 'Windows 11', python: '3.9.0' },
+            { os: 'macOS Sonoma', python: '3.11.0' },
+            { os: 'Ubuntu 22.04', python: '3.10.0' },
+            { os: 'Windows 10', python: '3.8.0' },
+            { os: 'macOS Monterey', python: '3.10.5' },
+        ];
+
+        // Initialize
+        document.getElementById('totalSlides').textContent = totalSlides;
+        updateSlide();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            }
+        });
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlideIndex) {
+                    slide.classList.add('active');
+                } else if (index < currentSlideIndex) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+            document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides - 1;
+
+            // Update progress bar
+            const progress = ((currentSlideIndex + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+
+        function showProblem(problemId) {
+            const explanations = {
+                1: '😰 環境依存の問題: OSやインストール済みのライブラリが異なるため',
+                2: '😱 設定の変更: システムアップデートや他のソフトウェアの影響',
+                3: '😭 プラットフォームの違い: Windows/Mac/Linuxの差異'
+            };
+            const explanation = document.getElementById('problemExplanation');
+            explanation.style.opacity = '0';
+            setTimeout(() => {
+                explanation.textContent = explanations[problemId];
+                explanation.style.opacity = '1';
+                explanation.style.transition = 'opacity 0.5s ease';
+            }, 200);
+        }
+
+        function addStudent() {
+            if (studentCount >= 10) return;
+            
+            studentCount++;
+            const env = environments[Math.floor(Math.random() * environments.length)];
+            const studentDiv = document.createElement('div');
+            studentDiv.className = 'vm-box';
+            studentDiv.style.fontSize = '0.8em';
+            studentDiv.style.padding = '10px';
+            studentDiv.style.margin = '5px';
+            studentDiv.innerHTML = `
+                <strong>学生${studentCount}</strong><br>
+                ${env.os}<br>
+                Python ${env.python}
+            `;
+            document.getElementById('studentEnvironments').appendChild(studentDiv);
+            
+            updateChaosLevel();
+        }
+
+        function resetStudents() {
+            studentCount = 0;
+            document.getElementById('studentEnvironments').innerHTML = '';
+            document.getElementById('chaosLevel').textContent = '';
+        }
+
+        function updateChaosLevel() {
+            const chaosLevel = document.getElementById('chaosLevel');
+            if (studentCount > 7) {
+                chaosLevel.innerHTML = '<span style="color: #ff5f56;">🌪️ カオスレベル: 高！環境統一が必要です！</span>';
+            } else if (studentCount > 4) {
+                chaosLevel.innerHTML = '<span style="color: #ffc107;">⚠️ カオスレベル: 中。管理が困難になってきました。</span>';
+            } else {
+                chaosLevel.innerHTML = '<span style="color: #27c93f;">✅ カオスレベル: 低。まだ管理可能です。</span>';
+            }
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.onclick = null;
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                setTimeout(() => {
+                    element.innerHTML += '<br><span style="color: #27c93f;">✅ 正解！本番環境は慎重に扱う必要があります。</span>';
+                }, 300);
+            } else {
+                element.classList.add('incorrect');
+            }
+        }
+
+        function explainDockerCompose() {
+            const explanation = document.getElementById('dockerExplanation');
+            explanation.innerHTML = `
+                <div class="tip-box">
+                    <strong>web:</strong> Djangoアプリケーションコンテナ<br>
+                    <strong>db:</strong> PostgreSQLデータベースコンテナ<br>
+                    <strong>ports:</strong> ホストの8000番ポートをコンテナに接続<br>
+                    <strong>volumes:</strong> ファイルの同期設定<br>
+                    <strong>environment:</strong> 環境変数の設定
+                </div>
+            `;
+        }
+
+        // Touch support for mobile devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
